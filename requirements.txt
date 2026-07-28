@@ -1,0 +1,6 @@
+google-adk[a2a]
+python-dotenv
+requests
+uvicorn
+pypdf
+fpdf2
