@@ -87,16 +87,16 @@ ceo_agent = Agent(
     and add your perspective to what your team produces.
     """,
     tools=[
-        # Internal department agents
+        ## Internal department agents
         AgentTool(developer_agent),
         AgentTool(marketing_agent),
         AgentTool(hr_agent),
         AgentTool(testing_agent),
-        # External A2A agents
+        ## External A2A agents
         connect_to_external_agent,
         call_external_agent,
         get_external_agent_skills,
-        # Utilities
+        ## Utilities
         get_current_time,
         get_date,
         calculate,

@@ -19,8 +19,8 @@ class AgentCard:
     url: str
     skills: list
     version: str = "1.0.0"
-    input_modes: list = None
-    output_modes: list = None
+    input_modes: Optional[list] = None
+    output_modes: Optional[list] = None
 
     @classmethod
     def from_dict(cls, data: dict) -> "AgentCard":
