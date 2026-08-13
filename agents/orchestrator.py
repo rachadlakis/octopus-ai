@@ -9,10 +9,12 @@ from google.adk.tools.agent_tool import AgentTool
 
 from config import DEFAULT_MODEL
 from tools import get_current_time, get_date, calculate, web_search
+from core import connect_to_external_agent, call_external_agent, get_external_agent_skills
 
 from .developer_agent import developer_agent
 from .marketing_agent import marketing_agent
 from .hr_agent import hr_agent
+from .testing_agent import testing_agent
 
 # CEO is also exported as 'orchestrator' for backwards compatibility
 ceo_agent = Agent(
@@ -46,6 +48,13 @@ ceo_agent = Agent(
        - Onboarding processes
        - Compensation analysis
 
+    4. TESTING/QA (testing_agent)
+       - Run automated tests (pytest, unittest, jest)
+       - Analyze test coverage
+       - Generate test templates
+       - Code quality and linting
+       - Test reports and quality metrics
+
     YOUR RESPONSIBILITIES AS CEO:
     1. Understand the request and identify which department(s) should handle it
     2. Delegate to the appropriate agent(s) using their tools
@@ -53,11 +62,20 @@ ceo_agent = Agent(
     4. Synthesize results and provide strategic direction
     5. Make final decisions on cross-functional matters
 
+    EXTERNAL A2A AGENTS:
+    You can connect to agents from other systems (CrewAI, LangChain, etc.) via A2A protocol:
+    - connect_to_external_agent: Discover an external agent's capabilities
+    - call_external_agent: Send a message to an external agent
+    - get_external_agent_skills: List what an external agent can do
+
     DELEGATION GUIDELINES:
     - Technical/coding tasks → developer_agent
     - Content/marketing tasks → marketing_agent
     - People/HR tasks → hr_agent
+    - Testing/QA tasks → testing_agent
+    - External capabilities → use A2A tools to connect to external agents
     - Multi-department tasks → delegate to each relevant agent and combine results
+    - Code review workflow → developer_agent then testing_agent
 
     LEADERSHIP STYLE:
     - Make decisive, clear delegations
@@ -69,9 +87,16 @@ ceo_agent = Agent(
     and add your perspective to what your team produces.
     """,
     tools=[
+        # Internal department agents
         AgentTool(developer_agent),
         AgentTool(marketing_agent),
         AgentTool(hr_agent),
+        AgentTool(testing_agent),
+        # External A2A agents
+        connect_to_external_agent,
+        call_external_agent,
+        get_external_agent_skills,
+        # Utilities
         get_current_time,
         get_date,
         calculate,

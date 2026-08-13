@@ -117,6 +117,31 @@ def run_hr_agent():
     uvicorn.run(server.build(), host=HOST, port=9003)
 
 
+def run_testing_agent():
+    """Run the testing agent as an A2A service."""
+    from agents.testing_agent import testing_agent
+
+    skills = [
+        AgentSkill(
+            id="testing",
+            name="Testing & QA",
+            description="Run tests, analyze coverage, lint code, and ensure quality",
+            tags=["testing", "qa", "quality", "coverage"],
+            examples=["Run pytest tests", "Check test coverage", "Generate test template"],
+        ),
+    ]
+
+    agent_card = create_agent_card(
+        name="Testing Agent",
+        description="AI Company QA lead",
+        skills=skills,
+        port=9004,
+    )
+
+    server = create_a2a_server(testing_agent, agent_card)
+    uvicorn.run(server.build(), host=HOST, port=9004)
+
+
 def run_ceo():
     """Run the CEO (orchestrator) as the main A2A service."""
     from agents.orchestrator import ceo_agent

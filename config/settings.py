@@ -80,4 +80,5 @@ AGENT_PORTS = {
     "developer_agent": 9001,
     "marketing_agent": 9002,
     "hr_agent": 9003,
+    "testing_agent": 9004,
 }

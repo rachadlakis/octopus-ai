@@ -10,8 +10,10 @@ CEO (ceo_agent) - Port 9000
 │   └── Tools: code execution, git, GitHub MCP, documentation
 ├── Marketing (marketing_agent) - Port 9002
 │   └── Tools: content analysis, social media, SEO, copywriting
-└── HR (hr_agent) - Port 9003
-    └── Tools: job posts, interviews, policies, onboarding
+├── HR (hr_agent) - Port 9003
+│   └── Tools: job posts, interviews, policies, onboarding
+└── Testing (testing_agent) - Port 9004
+    └── Tools: pytest, jest, coverage, linting, test generation
 ```
 
 ## Quick Start
@@ -49,11 +51,31 @@ python main.py ceo
 python main.py developer   # Port 9001
 python main.py marketing   # Port 9002
 python main.py hr          # Port 9003
+python main.py testing     # Port 9004
 ```
 
-### 4. Test the Agent
+### 4. Run the UI
 
+**Option 1: Streamlit Web UI** (Recommended)
 ```bash
+streamlit run ui.py
+```
+Opens a beautiful web interface at http://localhost:8501
+
+**Option 2: ADK Web UI**
+```bash
+python run_adk_ui.py ceo      # or developer, marketing, hr, testing
+```
+Uses ADK's built-in web interface
+
+**Option 3: Terminal Chat**
+```bash
+python chat.py ceo            # Simple terminal-based chat
+```
+
+**Option 4: A2A Server**
+```bash
+python main.py ceo            # Exposes agent via A2A protocol
 curl http://localhost:9000/.well-known/agent.json
 ```
 
@@ -78,6 +100,12 @@ Coordinates all departments using `AgentTool` to delegate while maintaining cont
 - **Onboarding**: `create_onboarding_checklist`
 - **Policies**: `generate_policy_template`, `calculate_salary_range`
 
+### Testing/QA
+- **Execution**: `run_pytest`, `run_unittest`, `run_jest`
+- **Coverage**: `check_test_coverage`, `analyze_test_quality`
+- **Generation**: `generate_test_template`, `create_mock_template`
+- **Quality**: `lint_code`, `generate_test_report`
+
 ## Multi-Model Support
 
 Uses **LiteLLM** via `google.adk.models.lite_llm` for provider flexibility:
@@ -87,6 +115,29 @@ Uses **LiteLLM** via `google.adk.models.lite_llm` for provider flexibility:
 | Anthropic | claude-sonnet-4, claude-opus-4, claude-3.5-haiku |
 | OpenAI | gpt-4o, gpt-4o-mini, o1 |
 | Google | gemini-2.0-flash, gemini-1.5-pro |
+
+## External Agent Integration (A2A)
+
+Connect to agents from other frameworks (CrewAI, LangChain, AutoGen) via A2A protocol:
+
+```python
+from core import A2AClient
+
+# Connect to any A2A-compliant agent
+client = A2AClient("http://localhost:8080")
+info = client.discover()  # Get agent capabilities
+response = client.send("Hello from ADK!")
+```
+
+The CEO can also connect to external agents dynamically:
+```
+CEO: "Connect to the agent at localhost:8080 and ask it to analyze our data"
+```
+
+Tools available:
+- `connect_to_external_agent(url)` - Discover external agent
+- `call_external_agent(url, message)` - Send message to external agent
+- `get_external_agent_skills(url)` - List external agent capabilities
 
 ## MCP Integration
 

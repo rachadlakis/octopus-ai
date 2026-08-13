@@ -6,7 +6,7 @@ import re
 import urllib.request
 import urllib.error
 from datetime import datetime
-from urllib.parse import urlparse, urlencode, quote_plus
+from urllib.parse import urlparse, urlencode, quote_plus, unquote
 
 
 def get_current_time() -> dict:
@@ -75,7 +75,7 @@ def web_search(query: str, num_results: int = 5) -> dict:
             if "uddg=" in url:
                 url_match = re.search(r'uddg=([^&]+)', url)
                 if url_match:
-                    url = urllib.request.unquote(url_match.group(1))
+                    url = unquote(url_match.group(1))
 
             result = {
                 "title": title.strip(),

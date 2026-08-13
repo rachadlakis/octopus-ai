@@ -61,6 +61,19 @@ from .hr_tools import (
     generate_policy_template,
 )
 
+# Testing tools
+from .testing_tools import (
+    run_pytest,
+    run_unittest,
+    run_jest,
+    check_test_coverage,
+    generate_test_template,
+    analyze_test_quality,
+    create_mock_template,
+    lint_code,
+    generate_test_report,
+)
+
 __all__ = [
     # Common
     "get_current_time",
@@ -113,4 +126,14 @@ __all__ = [
     "create_onboarding_checklist",
     "calculate_salary_range",
     "generate_policy_template",
+    # Testing
+    "run_pytest",
+    "run_unittest",
+    "run_jest",
+    "check_test_coverage",
+    "generate_test_template",
+    "analyze_test_quality",
+    "create_mock_template",
+    "lint_code",
+    "generate_test_report",
 ]

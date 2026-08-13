@@ -17,9 +17,12 @@ python main.py ceo         # Port 9000 - CEO (orchestrates all departments)
 python main.py developer   # Port 9001 - Software development
 python main.py marketing   # Port 9002 - Marketing & content
 python main.py hr          # Port 9003 - Human resources
+python main.py testing     # Port 9004 - Testing & QA
 
-# Test agent discovery
-curl http://localhost:9000/.well-known/agent.json
+# Run UI options
+streamlit run ui.py           # Web UI (recommended)
+python chat.py ceo            # Terminal chat
+python run_adk_ui.py ceo      # ADK web UI
 ```
 
 ## Company Structure
@@ -27,11 +30,13 @@ curl http://localhost:9000/.well-known/agent.json
 ```
 CEO (ceo_agent) - Port 9000
 ├── Developer (developer_agent) - Port 9001
-│   └── Tools: code execution, git, file ops, documentation
+│   └── Tools: code execution, git, GitHub MCP, documentation
 ├── Marketing (marketing_agent) - Port 9002
 │   └── Tools: content analysis, social media, SEO, copywriting
-└── HR (hr_agent) - Port 9003
-    └── Tools: job posts, interviews, policies, onboarding
+├── HR (hr_agent) - Port 9003
+│   └── Tools: job posts, interviews, policies, onboarding
+└── Testing (testing_agent) - Port 9004
+    └── Tools: pytest, jest, coverage, linting, test generation
 ```
 
 ## Architecture
@@ -55,6 +60,7 @@ ceo_agent = Agent(
         AgentTool(developer_agent),  # Control returns after completion
         AgentTool(marketing_agent),
         AgentTool(hr_agent),
+        AgentTool(testing_agent),
     ],
 )
 ```
@@ -75,6 +81,8 @@ ceo_agent = Agent(
 **Marketing**: `analyze_readability`, `create_social_post`, `generate_hashtags`, `seo_keyword_analysis`, `analyze_headline`, `create_content_calendar`
 
 **HR**: `generate_job_description`, `parse_resume`, `generate_interview_questions`, `create_onboarding_checklist`, `calculate_salary_range`, `generate_policy_template`
+
+**Testing**: `run_pytest`, `run_unittest`, `run_jest`, `check_test_coverage`, `generate_test_template`, `analyze_test_quality`, `lint_code`, `generate_test_report`
 
 ## Environment
 

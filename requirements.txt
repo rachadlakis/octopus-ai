@@ -2,6 +2,7 @@
 # ADK (Agent Development Kit)
 google-adk[database]==0.3.0
 google-generativeai==0.8.5
+deprecated>=1.2.0
 
 # A2A (Agent-to-Agent Protocol)
 a2a-sdk>=0.2.0
@@ -16,3 +17,6 @@ pydantic>=2.0.0
 
 # Optional: LiteLLM for multi-provider support
 litellm>=1.66.0
+
+# UI
+streamlit>=1.32.0
