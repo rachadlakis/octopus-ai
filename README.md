@@ -1,137 +1,118 @@
-# octopus-ai
+# AI Company
 
-A fresh A2A multi-agent project inspired by your original structure, but with new agent names and new roles.
+A multi-agent AI company simulation built with **Google ADK** (Agent Development Kit) and **A2A** (Agent-to-Agent Protocol). Each agent represents a company role with specialized tools.
 
-## What is included
+## Company Structure
 
-- 5 specialist agents, each exposed over A2A (HTTP)
-- 1 orchestrator agent that controls all specialists via `AgentTool(RemoteA2aAgent(...))`
-- 1 LoopAgent specialist (`risk_monitor_agent`)
-- 1 SequentialAgent specialist (`planning_pipeline_agent`)
-- Starter `requirements.txt`
-- Starter `.env.example`
-- `run_all_agents.py` script to launch all 5 specialist agents
-
-## Architecture
-
-```text
-                                  A2A Protocol (HTTP)
-                                         |
-+-------------------------+              |
-| orchestrator_agent      |              |
-| (adk web on :8000)      |              |
-|                         |   +----------+-------------------------------+
-| AgentTool -> docs       +---> document_service_agent  (:8101)          |
-| AgentTool -> planner    +---> planning_pipeline_agent (:8102) Sequential|
-| AgentTool -> monitor    +---> risk_monitor_agent      (:8103) Loop      |
-| AgentTool -> report     +---> reporting_agent         (:8104)           |
-| AgentTool -> registry   +---> registry_agent          (:8105)           |
-+-------------------------+   +------------------------------------------+
+```
+CEO (ceo_agent) - Port 9000
+├── Developer (developer_agent) - Port 9001
+│   └── Tools: code execution, git, GitHub MCP, documentation
+├── Marketing (marketing_agent) - Port 9002
+│   └── Tools: content analysis, social media, SEO, copywriting
+└── HR (hr_agent) - Port 9003
+    └── Tools: job posts, interviews, policies, onboarding
 ```
 
-## Folder structure
+## Quick Start
 
-```text
-octopus-ai/
-├── .env.example
-├── README.md
-├── requirements.txt
-├── run_all_agents.py
-├── orchestrator/
-│   ├── __init__.py
-│   └── agent.py
-├── document_service_agent/
-│   ├── __init__.py
-│   └── document_service_agent.py
-├── planning_pipeline_agent/
-│   ├── __init__.py
-│   └── planning_pipeline_agent.py
-├── risk_monitor_agent/
-│   ├── __init__.py
-│   └── risk_monitor_agent.py
-├── reporting_agent/
-│   ├── __init__.py
-│   └── reporting_agent.py
-├── registry_agent/
-│   ├── __init__.py
-│   └── registry_agent.py
-└── workspace/
-```
-
-## Agent roles
-
-1. `document_service_agent` (port 8101)
-
-- Sandboxed file operations (list/read/write/delete) for text files.
-
-1. `planning_pipeline_agent` (port 8102)
-
-- Sequential planning pipeline:
-- Brief generation
-- Plan generation
-- QA/polish
-
-1. `risk_monitor_agent` (port 8103)
-
-- Loop-based iterative monitor:
-- Inspector reviews report quality
-- Improver refines report
-- `finalize_cycle` exits loop when complete
-
-1. `reporting_agent` (port 8104)
-
-- Structured report generation using a markdown-report tool.
-
-1. `registry_agent` (port 8105)
-
-- Local JSON entity registry (add/list/search records).
-
-## Setup
-
-From `octopus-ai`:
+### 1. Install Dependencies
 
 ```bash
+python -m venv .venv
+.venv\Scripts\activate  # Windows
 pip install -r requirements.txt
-copy .env.example .env
 ```
 
-Set at least:
+### 2. Configure Environment
 
-```env
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set your model provider:
+```bash
+MODEL_PROVIDER=anthropic  # or openai, google
 ANTHROPIC_API_KEY=your_key_here
+
+# Optional: GitHub MCP for Developer agent
+GITHUB_TOKEN=your_github_token
 ```
 
-## Run
-
-### Option A: Start all specialist agents together
+### 3. Run the Company
 
 ```bash
-python run_all_agents.py
+# Run the CEO (coordinates all departments)
+python main.py ceo
+
+# Or run individual agents
+python main.py developer   # Port 9001
+python main.py marketing   # Port 9002
+python main.py hr          # Port 9003
 ```
 
-Then in another terminal:
+### 4. Test the Agent
 
 ```bash
-adk web .
+curl http://localhost:9000/.well-known/agent.json
 ```
 
-Open [http://localhost:8000](http://localhost:8000) and select `orchestrator_agent`.
+## Agents & Tools
 
-### Option B: Start agents manually
+### CEO (Orchestrator)
+Coordinates all departments using `AgentTool` to delegate while maintaining control.
 
-```bash
-uvicorn document_service_agent.document_service_agent:a2a_app --host localhost --port 8101
-uvicorn planning_pipeline_agent.planning_pipeline_agent:a2a_app --host localhost --port 8102
-uvicorn risk_monitor_agent.risk_monitor_agent:a2a_app --host localhost --port 8103
-uvicorn reporting_agent.reporting_agent:a2a_app --host localhost --port 8104
-uvicorn registry_agent.registry_agent:a2a_app --host localhost --port 8105
-adk web .
+### Developer
+- **Code**: `execute_python`, `execute_shell`, `analyze_code`, `format_code`
+- **Git**: `git_status`, `git_commit`, `git_branch`, `git_push`, etc.
+- **GitHub MCP**: `create_issue`, `create_pull_request`, `search_repositories` (requires `GITHUB_TOKEN`)
+- **Setup**: `generate_dockerfile`, `generate_readme`, `generate_gitignore`
+
+### Marketing
+- **Content**: `analyze_readability`, `analyze_headline`, `word_count`
+- **Social**: `create_social_post`, `generate_hashtags`
+- **SEO**: `seo_keyword_analysis`, `generate_cta`, `create_content_calendar`
+
+### HR
+- **Recruitment**: `generate_job_description`, `parse_resume`, `generate_interview_questions`
+- **Onboarding**: `create_onboarding_checklist`
+- **Policies**: `generate_policy_template`, `calculate_salary_range`
+
+## Multi-Model Support
+
+Uses **LiteLLM** via `google.adk.models.lite_llm` for provider flexibility:
+
+| Provider | Models |
+|----------|--------|
+| Anthropic | claude-sonnet-4, claude-opus-4, claude-3.5-haiku |
+| OpenAI | gpt-4o, gpt-4o-mini, o1 |
+| Google | gemini-2.0-flash, gemini-1.5-pro |
+
+## MCP Integration
+
+Agents can connect to MCP (Model Context Protocol) servers for extended capabilities:
+
+```python
+from core import get_github_tools
+
+# Load GitHub MCP tools
+github_tools = await get_github_tools()
 ```
 
-## Example prompts for orchestrator
+Available MCP integrations:
+- **GitHub**: Issues, PRs, repositories
+- **Slack**: Team communication
+- **PostgreSQL**: Database queries
+- **Filesystem**: File operations
 
-- "Create a rollout plan for a new delivery zone and include risks."
-- "Generate a monitoring report for this incident summary."
-- "Save the final report to workspace/reports/zone_a.md"
-- "Add driver Jane Doe with metadata to registry and list all driver records."
-- "Plan, monitor, and produce a final markdown report for a fleet launch."
+## Technologies
+
+- **Google ADK**: Agent Development Kit
+- **A2A Protocol**: Agent-to-Agent communication
+- **LiteLLM**: Multi-provider LLM support
+- **MCP**: Model Context Protocol for tool integration
+- **Uvicorn**: ASGI server
+
+## License
+
+MIT

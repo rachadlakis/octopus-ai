@@ -1,6 +1,18 @@
-google-adk[a2a]
-python-dotenv
-requests
-uvicorn
-pypdf
-fpdf2
+# AI Company - Requirements
+# ADK (Agent Development Kit)
+google-adk[database]==0.3.0
+google-generativeai==0.8.5
+
+# A2A (Agent-to-Agent Protocol)
+a2a-sdk>=0.2.0
+
+# Server
+uvicorn>=0.30.0
+starlette>=0.37.0
+
+# Utilities
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# Optional: LiteLLM for multi-provider support
+litellm>=1.66.0
